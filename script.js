@@ -5,11 +5,17 @@
 
   /* hero load reveal: wait for the photo so the zoom starts on a real frame */
   const heroImg = document.querySelector('.hero-bg img');
-  const go = () => requestAnimationFrame(() => requestAnimationFrame(() => doc.classList.add('ready')));
+  let started = false;
+  const go = () => {
+    if (started) return;
+    started = true;
+    void document.body.offsetHeight; /* commit the start state so the transition runs */
+    doc.classList.add('ready');
+  };
   if (heroImg && !heroImg.complete) {
-    heroImg.addEventListener('load', go, { once: true });
-    setTimeout(go, 1800);
-  } else go();
+    heroImg.addEventListener('load', () => setTimeout(go, 60), { once: true });
+    setTimeout(go, 1200);
+  } else setTimeout(go, 60);
 
   /* nav */
   const nav = document.querySelector('.nav');
